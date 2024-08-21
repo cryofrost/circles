@@ -1,0 +1,103 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: black;
+}
+#toggleControlPanelButton {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: none;
+  padding: 0 5px;
+  cursor: pointer;
+  z-index: 1000;
+  font-size: 24px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+#controlPanel {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  background: rgba(255, 255, 255, 0.8);
+  overflow-y: auto;
+  padding: 10px;
+  height: 100%;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+/*
+  #controlPanel {
+    width: 100%;
+    max-width: 300px;
+    background: rgba(255, 255, 255, 0.8);
+    overflow-y: auto;
+    padding: 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+} */
+
+#controlPanel div {
+  border: solid 1px;
+  padding: 5px;
+}
+
+#controlPanel button {
+  margin: 5px;
+  padding: 5px;
+}
+
+#controlPanel h2 {
+  padding-left: 35px;
+}
+
+.canvas-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.canvas-item {
+  margin: 10px;
+  border: 1px solid #fff;
+  max-width: 151px;
+}
+
+.canvas-container canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #000000;
+}
+.canvas-item canvas {
+  display: block;
+  position: relative;
+  
+}
+
+@media (min-width: 768px) {
+  body {
+    flex-direction: row;
+  }
+  #controlPanel {
+    width: 300px;
+    height: 100%;
+  }
+  .canvas-container {
+    flex: 1;
+    width: 100%;
+  }
+}
