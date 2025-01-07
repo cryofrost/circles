@@ -26,9 +26,11 @@ uniform float u_charnum;
 uniform float u_spin;
 uniform vec2 u_center;
 uniform vec2 u_textureSize;
+uniform float u_alpha;
 
 out vec2 v_texCoord;
 out vec3 v_color;
+out float v_alpha;
 
 // Function to generate RGB colors spanning the full spectrum
 vec3 generateColor(float index, float total) {
@@ -92,6 +94,7 @@ v_color = hsl2rgb(mod(i * 18.0, 360.0) / 360.0);
 //v_color = hsl2rgb(i * 18.0 /360.0, 1.0, 0.5);
 //v_color = hsl2rgb(i * 18.0 /360.0);
 v_texCoord = a_texCoord;
+v_alpha = u_alpha;
 }`;
 
 // Fragment shader source
@@ -100,14 +103,15 @@ precision highp float;
 
 in vec2 v_texCoord;
 in vec3 v_color;
+in float v_alpha;
 
 uniform sampler2D u_texture;
-uniform float u_alpha;
+
 
 out vec4 outColor;
 
 void main() {
-outColor = texture(u_texture, v_texCoord) * vec4(v_color, u_alpha);
+outColor = texture(u_texture, v_texCoord) * vec4(v_color, v_alpha);
 //outColor = texture(u_texture, v_texCoord) * vec4(1.0, 1.0, 1.0, 1.0);
 // outColor = vec4(1, 1, 1, 1); // For flat white color
 //outColor = vec4(v_color, 1.0);
