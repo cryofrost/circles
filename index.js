@@ -475,6 +475,16 @@ function updateLayerNumber(layer, value) {
   document.getElementById('loadLayoutInput').addEventListener('change', loadLayout);
   document.getElementById('exportAnimationButton').addEventListener('click', exportAnimation);
 
+
+  document.getElementById('toggleButton').addEventListener('click', function() {
+    const layersControlPanel = document.getElementById('layers');
+  
+    if (layersControlPanel.style.display === 'none' || layersControlPanel.style.display === '') {
+      layersControlPanel.style.display = 'block';
+    } else {
+      layersControlPanel.style.display = 'none';
+    }
+  });
   // Update frequency input range based on selected range
   rangeSelect.addEventListener('change', updateFrequencyRange);
 
