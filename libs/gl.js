@@ -181,8 +181,46 @@ export function drawMantrasGL(layer) {
 
   const time = performance.now();
   const center = new Float32Array([gl.canvas.width / 2, gl.canvas.height / 2]);
-
-
+  const breathe = layer.breathe;
+  
+  if (breathe) {
+    const now = Date.now();
+    const minSpeed = 0.9;
+    const faseDuration = 3000;
+    const pauseDuration = 1000;
+    const swingDuration = faseDuration - pauseDuration;
+    
+    if (!layer.hasOwnProperty('baseSpeed')) {
+      layer.baseSpeed = layer.speed;
+      layer.spinToggledTime = now;
+    }
+    var time_elapsed = now - layer.spinToggledTime;
+    
+    if (time_elapsed >= faseDuration ) {
+      layer.spin = layer.spin * -1;
+      layer.spinToggledTime = now;
+      // time_elapsed = now - layer.spinToggledTime;
+    }
+    if (time_elapsed >= swingDuration & layer.speed > minSpeed) {
+      var speed = layer.speed - ((time_elapsed - swingDuration) / 1000) * layer.baseSpeed;
+      if (speed <= minSpeed) {
+        layer.speed = minSpeed;
+      }
+      else {
+        layer.speed = speed;
+      }
+    }
+    if (time_elapsed <= pauseDuration & layer.speed != layer.baseSpeed) {
+      var speed = minSpeed + layer.speed + ((time_elapsed - pauseDuration) / 1000) * layer.speed;
+      if (speed >= layer.baseSpeed) {
+        layer.speed = layer.baseSpeed;
+      }
+      else {
+        layer.speed = speed;
+      }
+    }
+  }
+  
   const uniforms = {
     u_projectionMatrix: mat4.ortho(projectionMatrix, 0, gl.canvas.width, gl.canvas.height, 0, -1, 1),
     u_radius: Math.min(gl.canvas.width, gl.canvas.height) * 0.4,

@@ -163,11 +163,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Add new layer with specific type and speed
   function addLayer(e) {
+    const now = Date.now();
     const layer = {
       type: 'lines',
       speed: 1.0,
       number: 420,
       spin: 1,
+      spinToggledTime: now,
       opacity: 1.0
     };
     // layer.speed = 1;
@@ -345,6 +347,12 @@ function updateLayerNumber(layer, value) {
     updateLayerControls();
   }
 
+  function toggleBreathe(event) {
+    var breathe = event.target.checked;
+    layers.forEach((layer, index) => {
+      layer.breathe = breathe;
+    });
+  }
 
   // Save layout to a file
   function saveLayout() {
@@ -473,7 +481,8 @@ function updateLayerNumber(layer, value) {
   document.getElementById('saveLayoutButton').addEventListener('click', saveLayout);
   document.getElementById('loadLayoutButton').addEventListener('click', () => document.getElementById('loadLayoutInput').click());
   document.getElementById('loadLayoutInput').addEventListener('change', loadLayout);
-  document.getElementById('exportAnimationButton').addEventListener('click', exportAnimation);
+  document.getElementById('breatheCheckbox').addEventListener('change', toggleBreathe);
+  // document.getElementById('exportAnimationButton').addEventListener('click', exportAnimation);
 
 
   document.getElementById('toggleButton').addEventListener('click', function() {
