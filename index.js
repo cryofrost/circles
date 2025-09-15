@@ -9,6 +9,23 @@ import * as twgl from './node_modules/twgl.js/dist/5.x/twgl-full.module.js';
 
 document.addEventListener('DOMContentLoaded', function() {
 
+// Fetch the default layout JSON file when the page finishes loading
+  fetch('/default_layout.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => {
+      loadLayoutFromJSON(data);
+      console.info('Default layout loaded');
+      console.debug(data);
+      // You can add code here to use the loaded layout data as needed
+    })
+    .catch(error => {
+      console.error('Failed to load default layout:', error);
+    });
 
   // Utility function to create a DOM element
   function createElement(tag, attributes, ...children) {
@@ -366,16 +383,28 @@ function updateLayerNumber(layer, value) {
     a.click();
   }
 
-  // Load layout from a file
-  function loadLayout(event) {
+  // Function to handle file input for loading layout
+  function handleLoadLayout(event) {
     const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const layout = JSON.parse(e.target.result);
+    if (file) {
+      loadLayout(file);
+    }
+  }
+
+  function loadLayoutFromJSON(data) {
+    const layout = data;
       layers.length = 0;
       layers.push(...layout);
       // recalculateOpacity();
       updateLayerControls();
+  }
+
+  // Load layout from a file
+  function loadLayout(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const data = JSON.parse(e.target.result);
+      loadLayoutFromJSON(data);
     };
     reader.readAsText(file);
   }
@@ -480,7 +509,7 @@ function updateLayerNumber(layer, value) {
   document.getElementById('addLayerButton').addEventListener('click', addLayer);
   document.getElementById('saveLayoutButton').addEventListener('click', saveLayout);
   document.getElementById('loadLayoutButton').addEventListener('click', () => document.getElementById('loadLayoutInput').click());
-  document.getElementById('loadLayoutInput').addEventListener('change', loadLayout);
+  document.getElementById('loadLayoutInput').addEventListener('change', handleLoadLayout);
   document.getElementById('breatheCheckbox').addEventListener('change', toggleBreathe);
   // document.getElementById('exportAnimationButton').addEventListener('click', exportAnimation);
 
@@ -507,5 +536,7 @@ function updateLayerNumber(layer, value) {
   });
 
   updateLayerControls();
+
+  
 
 });

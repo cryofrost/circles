@@ -4,15 +4,17 @@
   "description": "A project with Bootstrap and Animate.css",
   "main": "index.js",
   "scripts": {
-    "start": "live-server"
+    "start": "live-server --port=3000 --host=0.0.0.0 --no-browser",
+    "test": "node test.js"
   },
   "dependencies": {
     "animate.css": "^4.1.1",
-    "bootstrap": "^5.3.0",
+    "bootstrap": "^5.3.6",
     "gl-matrix": "^3.4.3",
+    "puppeteer": "^24.9.0",
     "twgl.js": "^5.5.4"
   },
   "devDependencies": {
-    "live-server": "^1.2.1"
+    "live-server": "^1.2.0"
   }
 }

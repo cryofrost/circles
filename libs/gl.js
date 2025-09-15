@@ -88,11 +88,11 @@ vec2 rotatedPosition = rotationMatrix * (a_position * u_textureSize);
 vec4 position = vec4(rotatedPosition + pos, 0.0, 1.0);
 gl_Position = u_projectionMatrix * position;
 
-v_color = hsl2rgb(mod(i * 18.0, 360.0) / 360.0);
-//v_color = generateColor(a_instanceID, 420.0);
+// constant colors of chars
+// v_color = hsl2rgb(mod(i * 18.0, 360.0) / 360.0);
 
-//v_color = hsl2rgb(i * 18.0 /360.0, 1.0, 0.5);
-//v_color = hsl2rgb(i * 18.0 /360.0);
+v_color = hsl2rgb(mod(i * 18.0 * ((u_time + i) * speedFactor), 360.0) / 360.0);
+
 v_texCoord = a_texCoord;
 v_alpha = u_alpha;
 }`;
