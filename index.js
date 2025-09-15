@@ -129,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 'Lines')
           )
         ),
+        createElement('label', { onclick: (e) => deleteLayer(layer, e.target.parentNode), class: "deleteLayer"}, '🗑️'),
         createElement('label', {}, 'Speed: ', speedInput),
         createElement('label', {}, 'Number: ', numberInput, ` ${layer.number}`),
         createElement('label', {}, 'Spin: ', createElement('input', {
@@ -158,6 +159,15 @@ document.addEventListener('DOMContentLoaded', function() {
     layers.forEach((layer, index) => {
       layer.opacity = 1 - index * 0.1;
     });
+  }
+
+  function deleteLayer(layer, parent) {
+    if (parent) {
+      parent.remove();
+    }
+    const index = layers.indexOf(layer);
+    layers.splice(index, 1);
+    updateLayerControls();
   }
 
   function onDragStart(e,
