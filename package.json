@@ -4,7 +4,10 @@
   "description": "A project with Bootstrap and Animate.css",
   "main": "index.js",
   "scripts": {
-    "start": "live-server --port=3000 --host=0.0.0.0 --no-browser",
+    "start": "vite --port 3000 --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start:legacy": "live-server --port=3000 --host=0.0.0.0 --no-browser",
     "test": "node test.js"
   },
   "dependencies": {
@@ -15,6 +18,7 @@
     "twgl.js": "^5.5.4"
   },
   "devDependencies": {
-    "live-server": "^1.2.0"
+    "live-server": "^1.2.0",
+    "vite": "^7.3.1"
   }
 }
