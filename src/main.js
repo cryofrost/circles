@@ -4,12 +4,14 @@ import { renderCircles, renderLines, renderMantras } from './renderers/canvas2d.
 import { LayerPanel } from './ui/LayerPanel.js';
 import { GlobalControls } from './ui/GlobalControls.js';
 import { GamepadController } from './controller/GamepadController.js';
+import { ProtocolSequencer } from './state/ProtocolSequencer.js';
 
 class App {
   #store = new LayerStore();
   #glRenderer;
   #ctx;
   #bgCtx;
+  #protocol = new ProtocolSequencer();
 
   init() {
     // ── canvases ───────────────────────────────────────────────────────
@@ -28,7 +30,7 @@ class App {
 
     // ── UI ─────────────────────────────────────────────────────────────
     const layerPanel = new LayerPanel(this.#store, document.getElementById('layers'));
-    new GlobalControls(this.#store);
+    new GlobalControls(this.#store, this.#protocol);
     new GamepadController(
       this.#store,
       layerPanel,
@@ -55,6 +57,8 @@ class App {
     const time = performance.now();
     const ctx = this.#ctx;
     const bgCtx = this.#bgCtx;
+    this.#protocol.tick(time);
+    const modulation = this.#protocol.running ? this.#protocol.modulation(time) : 1;
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     bgCtx.clearRect(0, 0, bgCtx.canvas.width, bgCtx.canvas.height);
@@ -63,7 +67,7 @@ class App {
 
     for (const layer of this.#store.layers) {
       ctx.save();
-      ctx.globalAlpha = layer.opacity;
+      ctx.globalAlpha = layer.opacity * modulation;
 
       switch (layer.type) {
         case 'circles':
@@ -76,7 +80,7 @@ class App {
           renderMantras(ctx, layer, time);
           break;
         case 'mantrasGL':
-          this.#glRenderer.renderLayer(layer, time);
+          this.#glRenderer.renderLayer(layer, time, modulation);
           break;
       }
 

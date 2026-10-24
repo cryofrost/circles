@@ -10,9 +10,17 @@
 </head>
 <body>
   <button id="toggleControlPanelButton">☰</button>
+  <div id="stageOverlay" aria-live="polite" aria-label="Current protocol stage"></div>
   <div id="controlPanel">
     <h2>Layer Settings</h2>
     <div id="controllerStatus" aria-live="polite">Loading controller mapping...</div>
+    <section class="protocol" aria-labelledby="protocolHeading">
+      <h3 id="protocolHeading">Guided protocol</h3>
+      <p class="protocol-note">A gentle Alpha → Theta → Gamma sequence. Stop if it feels uncomfortable.</p>
+      <div id="protocolStatus" aria-live="polite"></div>
+      <button id="protocolButton" type="button">Start protocol</button>
+      <button id="protocolReset" type="button">Reset</button>
+    </section>
     <div id="layers"></div>
     <button id="addLayerButton">Add Layer</button>
     <button id="saveLayoutButton">Save Layout</button>

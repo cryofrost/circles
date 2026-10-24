@@ -102,8 +102,9 @@ export class GLMantrasRenderer {
    *
    * @param {{ id, speed, spin, opacity, number, breathe }} layer
    * @param {number} time - performance.now()
+   * @param {number} alphaMultiplier - global protocol modulation
    */
-  renderLayer(layer, time) {
+  renderLayer(layer, time, alphaMultiplier = 1) {
     const gl = this.#gl;
 
     // ── breathe animation ──────────────────────────────────────────────
@@ -143,7 +144,7 @@ export class GLMantrasRenderer {
       u_center: center,
       u_charnum: 0,
       u_spin: spin,
-      u_alpha: layer.opacity,
+      u_alpha: layer.opacity * alphaMultiplier,
       u_textureSize: new Float32Array(2),
     };
 
