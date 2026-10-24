@@ -10,6 +10,7 @@ uniform float u_radius;
 uniform float u_length;
 uniform float u_speed;
 uniform float u_time;
+uniform float u_phase;
 uniform float u_charnum;
 uniform float u_spin;
 uniform vec2 u_center;
@@ -35,15 +36,16 @@ void main() {
   float u_lengthFactor = 3.14159265359 / u_length / 2.0;
   float speedFactor = u_speed * 0.001;
   float angleStep = (2.0 * 3.14159265359) / u_length;
-  float animationAngle = i * u_lengthFactor + (u_time + i) * speedFactor;
-  float angle = u_spin * (c * angleStep * u_speed + animationAngle);
+  float baseAngle = c * angleStep * u_speed + i * u_lengthFactor;
+  float animationAngle = u_phase + i * speedFactor;
+  float angle = baseAngle + animationAngle;
 
   vec2 pos = u_center + vec2(
     radiusOffset * cos(angle),
     radiusOffset * sin(angle)
   );
 
-  float rotationAngle = angle - animationAngle + 3.14159265359 / 2.0;
+  float rotationAngle = angle + 3.14159265359 / 2.0;
   mat2 rotationMatrix = mat2(
      cos(rotationAngle), -sin(rotationAngle),
      sin(rotationAngle),  cos(rotationAngle)

@@ -8,7 +8,7 @@ import { MANTRA_TEXT } from '../config.js';
  * @param {{ speed, spin, number }} layer
  * @param {number} time  performance.now()
  */
-export function renderCircles(ctx, bgCtx, layer, time) {
+export function renderCircles(ctx, bgCtx, layer, time, animation = layer) {
   const { canvas } = ctx;
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
@@ -16,7 +16,7 @@ export function renderCircles(ctx, bgCtx, layer, time) {
   const bgRadius = Math.max(canvas.width, canvas.height);
 
   for (let i = 0; i < 20; i++) {
-    const angle = layer.spin * (i * Math.PI / 10 + time * 0.001 * layer.speed);
+    const angle = i * Math.PI / 10 + animation.phase;
     const x = centerX + radius * Math.cos(angle);
     const y = centerY + radius * Math.sin(angle);
     const size = 10 + i * 5;
@@ -46,7 +46,7 @@ export function renderCircles(ctx, bgCtx, layer, time) {
  * @param {{ speed, spin }} layer
  * @param {number} time  performance.now()
  */
-export function renderLines(ctx, layer, time) {
+export function renderLines(ctx, layer, time, animation = layer) {
   const { canvas } = ctx;
   const lineCount = 30;
   const length = Math.min(canvas.width, canvas.height) * 0.4;
@@ -54,7 +54,7 @@ export function renderLines(ctx, layer, time) {
   const centerY = canvas.height / 2;
 
   for (let i = 0; i < lineCount; i++) {
-    const angle = layer.spin * (i * Math.PI / 15 + time * 0.001 * layer.speed);
+    const angle = i * Math.PI / 15 + animation.phase;
     const x = centerX + length * Math.cos(angle);
     const y = centerY + length * Math.sin(angle);
 
@@ -73,14 +73,14 @@ export function renderLines(ctx, layer, time) {
  * @param {{ speed, spin, number }} layer
  * @param {number} time  performance.now()
  */
-export function renderMantras(ctx, layer, time) {
+export function renderMantras(ctx, layer, time, animation = layer) {
   const { canvas } = ctx;
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
   const radius = Math.min(canvas.width, canvas.height) * 0.4;
   const textLength = MANTRA_TEXT.length;
   const lengthFactor = Math.PI / textLength / 2;
-  const speedFactor = 0.001 * layer.speed;
+  const speedFactor = 0.001 * animation.speed;
   const angleStep = (2 * Math.PI) / textLength;
 
   ctx.textAlign = 'center';
@@ -89,7 +89,7 @@ export function renderMantras(ctx, layer, time) {
   for (let i = 0; i < layer.number; i++) {
     const radiusOffset = radius - i;
     const color = `hsl(${i * 18}, 100%, 50%)`;
-    const animAngle = layer.spin * (i * lengthFactor + time * speedFactor);
+    const animAngle = i * lengthFactor + animation.phase;
 
     ctx.font = `${Math.max(6, 18 - i)}px Arial`;
 

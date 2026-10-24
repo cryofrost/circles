@@ -5,6 +5,7 @@ import { LayerPanel } from './ui/LayerPanel.js';
 import { GlobalControls } from './ui/GlobalControls.js';
 import { GamepadController } from './controller/GamepadController.js';
 import { ProtocolSequencer } from './state/ProtocolSequencer.js';
+import { updateBreathe, createBreatheState } from './utils/breathe.js';
 
 class App {
   #store = new LayerStore();
@@ -12,6 +13,7 @@ class App {
   #ctx;
   #bgCtx;
   #protocol = new ProtocolSequencer();
+  #breatheStates = new Map();
 
   init() {
     // ── canvases ───────────────────────────────────────────────────────
@@ -66,21 +68,22 @@ class App {
     this.#glRenderer.beginFrame();
 
     for (const layer of this.#store.layers) {
+      const animation = this.#animationFor(layer, time);
       ctx.save();
       ctx.globalAlpha = layer.opacity * modulation;
 
       switch (layer.type) {
         case 'circles':
-          renderCircles(ctx, bgCtx, layer, time);
+          renderCircles(ctx, bgCtx, layer, time, animation);
           break;
         case 'lines':
-          renderLines(ctx, layer, time);
+          renderLines(ctx, layer, time, animation);
           break;
         case 'mantras':
-          renderMantras(ctx, layer, time);
+          renderMantras(ctx, layer, time, animation);
           break;
         case 'mantrasGL':
-          this.#glRenderer.renderLayer(layer, time, modulation);
+          this.#glRenderer.renderLayer(layer, time, modulation, animation);
           break;
       }
 
@@ -88,6 +91,37 @@ class App {
     }
 
     requestAnimationFrame(this.#loop);
+  };
+
+  #animationFor(layer, time) {
+    if (!layer.breathe) {
+      this.#breatheStates.delete(layer.id);
+      return {
+        speed: layer.speed,
+        spin: layer.spin,
+        phase: layer.spin * time * 0.001 * layer.speed,
+      };
+    }
+
+    if (!this.#breatheStates.has(layer.id)) {
+      this.#breatheStates.set(layer.id, createBreatheState(layer.spin, time));
+    }
+    const state = this.#breatheStates.get(layer.id);
+    const result = updateBreathe(state, layer.speed, time);
+    this.#breatheStates.set(layer.id, result.nextState);
+
+    // Breathe timing is shared by every layer, but only the WebGL mantra
+    // layer uses the alternating direction. Other layers keep their own
+    // configured direction and continue rotating continuously.
+    if (layer.type !== 'mantrasGL') {
+      return {
+        speed: layer.speed,
+        spin: layer.spin,
+        phase: layer.spin * time * 0.001 * layer.speed,
+      };
+    }
+
+    return { speed: result.speed, spin: result.spin, phase: result.phase };
   };
 }
 

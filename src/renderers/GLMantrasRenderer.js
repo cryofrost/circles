@@ -4,7 +4,6 @@ import { mat4 } from '../../node_modules/gl-matrix/esm/index.js';
 import vertexShaderSrc from '../shaders/mantra.vert?raw';
 import fragmentShaderSrc from '../shaders/mantra.frag?raw';
 import { renderLetters } from '../utils/textAtlas.js';
-import { updateBreathe, createBreatheState } from '../utils/breathe.js';
 import { MANTRA_TEXT, MAX_INSTANCES, FONT_SIZE } from '../config.js';
 
 /**
@@ -24,8 +23,6 @@ export class GLMantrasRenderer {
   #textures;
   #letterMetas; // [{ width, height }] — one entry per character
   #projectionMatrix = mat4.create();
-  // Map<layerId, BreatheState> — private animation runtime state
-  #breatheStates = new Map();
 
   constructor(canvas) {
     const gl = canvas.getContext('webgl2');
@@ -103,28 +100,12 @@ export class GLMantrasRenderer {
    * @param {{ id, speed, spin, opacity, number, breathe }} layer
    * @param {number} time - performance.now()
    * @param {number} alphaMultiplier - global protocol modulation
+   * @param {{ speed, spin, phase }} animation - resolved animation state
    */
-  renderLayer(layer, time, alphaMultiplier = 1) {
+  renderLayer(layer, time, alphaMultiplier = 1, animation = layer) {
     const gl = this.#gl;
 
-    // ── breathe animation ──────────────────────────────────────────────
-    let { speed, spin } = layer;
-
-    if (layer.breathe) {
-      if (!this.#breatheStates.has(layer.id)) {
-        this.#breatheStates.set(layer.id, createBreatheState(spin));
-      }
-      const result = updateBreathe(
-        this.#breatheStates.get(layer.id),
-        layer.speed,
-        Date.now()
-      );
-      speed = result.speed;
-      spin = result.spin;
-      this.#breatheStates.set(layer.id, result.nextState);
-    } else {
-      this.#breatheStates.delete(layer.id);
-    }
+    const { speed, spin } = animation;
 
     // ── uniforms ───────────────────────────────────────────────────────
     const center = new Float32Array([gl.canvas.width / 2, gl.canvas.height / 2]);
@@ -141,6 +122,7 @@ export class GLMantrasRenderer {
       u_length: MANTRA_TEXT.length,
       u_speed: speed,
       u_time: time,
+      u_phase: animation.phase,
       u_center: center,
       u_charnum: 0,
       u_spin: spin,
