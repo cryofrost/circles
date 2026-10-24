@@ -1,5 +1,5 @@
-import * as twgl from 'twgl.js';
-import { mat4 } from 'gl-matrix';
+import * as twgl from '../../node_modules/twgl.js/dist/5.x/twgl-full.module.js';
+import { mat4 } from '../../node_modules/gl-matrix/esm/index.js';
 
 import vertexShaderSrc from '../shaders/mantra.vert?raw';
 import fragmentShaderSrc from '../shaders/mantra.frag?raw';

@@ -4,10 +4,10 @@
   "description": "A project with Bootstrap and Animate.css",
   "main": "index.js",
   "scripts": {
-    "start": "vite --port 3000 --host 0.0.0.0",
+    "start": "vite --port 7777 --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
-    "start:legacy": "live-server --port=3000 --host=0.0.0.0 --no-browser",
+    "start:legacy": "live-server --port=7777 --host=0.0.0.0 --no-browser",
     "test": "node test.js"
   },
   "dependencies": {
