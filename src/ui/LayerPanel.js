@@ -9,6 +9,7 @@ import { MAX_INSTANCES } from '../config.js';
 export class LayerPanel {
   #store;
   #container;
+  #selectedIndex = 0;
 
   constructor(store, containerEl) {
     this.#store = store;
@@ -18,11 +19,22 @@ export class LayerPanel {
     this.#render();
   }
 
+  get selectedIndex() {
+    return this.#selectedIndex;
+  }
+
+  select(index) {
+    if (this.#store.length === 0) return;
+    this.#selectedIndex = Math.max(0, Math.min(index, this.#store.length - 1));
+    this.#render();
+  }
+
   // ── private ───────────────────────────────────────────────────────────
 
   #render() {
     const store = this.#store;
     const layers = store.layers;
+    this.#selectedIndex = Math.max(0, Math.min(this.#selectedIndex, layers.length - 1));
     this.#container.innerHTML = '';
 
     layers.forEach((layer, index) => {
@@ -35,7 +47,9 @@ export class LayerPanel {
     const store = this.#store;
     const div = document.createElement('div');
     div.className = 'layer';
+    div.classList.toggle('selected', index === this.#selectedIndex);
     div.draggable = true;
+    div.addEventListener('click', () => this.select(index));
 
     // ── type selector ──────────────────────────────────────────────────
     div.appendChild(this.#label('Type: ', (() => {

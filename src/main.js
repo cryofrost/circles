@@ -3,6 +3,7 @@ import { GLMantrasRenderer } from './renderers/GLMantrasRenderer.js';
 import { renderCircles, renderLines, renderMantras } from './renderers/canvas2d.js';
 import { LayerPanel } from './ui/LayerPanel.js';
 import { GlobalControls } from './ui/GlobalControls.js';
+import { GamepadController } from './controller/GamepadController.js';
 
 class App {
   #store = new LayerStore();
@@ -26,8 +27,13 @@ class App {
     this.#glRenderer = new GLMantrasRenderer(glCanvas);
 
     // ── UI ─────────────────────────────────────────────────────────────
-    new LayerPanel(this.#store, document.getElementById('layers'));
+    const layerPanel = new LayerPanel(this.#store, document.getElementById('layers'));
     new GlobalControls(this.#store);
+    new GamepadController(
+      this.#store,
+      layerPanel,
+      document.getElementById('controllerStatus')
+    ).start();
 
     // ── load default layout ────────────────────────────────────────────
     fetch('/default_layout.json')

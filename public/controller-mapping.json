@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "_comment": "Button indices use the standard Xbox controller layout. Axis values range from -1 to 1.",
+  "deadzone": 0.35,
+  "repeatDelayMs": 350,
+  "repeatIntervalMs": 120,
+  "buttons": {
+    "_comment": "A adds, B removes, X changes type, Y toggles layers, LB/RB select layers, Back toggles spin, Start toggles the panel.",
+    "0": "addLayer",
+    "1": "removeLayer",
+    "2": "cycleType",
+    "3": "toggleLayers",
+    "4": "selectPreviousLayer",
+    "5": "selectNextLayer",
+    "8": "toggleSpin",
+    "9": "togglePanel",
+    "10": "decreaseOpacity",
+    "11": "increaseOpacity",
+    "12": "selectPreviousLayer",
+    "13": "selectNextLayer",
+    "14": "decreaseSpeed",
+    "15": "increaseSpeed",
+    "_dpadComment": "D-pad: Up/Down select layers; Left/Right adjust speed."
+  },
+  "axes": [
+    {
+      "_comment": "Left stick horizontal changes number of elements.",
+      "axis": 0,
+      "negativeAction": "decreaseNumber",
+      "positiveAction": "increaseNumber"
+    },
+    {
+      "_comment": "Left stick vertical selects the previous or next layer.",
+      "axis": 1,
+      "negativeAction": "selectPreviousLayer",
+      "positiveAction": "selectNextLayer"
+    },
+    {
+      "_comment": "Right stick horizontal changes speed.",
+      "axis": 3,
+      "negativeAction": "decreaseSpeed",
+      "positiveAction": "increaseSpeed"
+    }
+  ]
+}
