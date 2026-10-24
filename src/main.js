@@ -1,3 +1,4 @@
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { LayerStore } from './state/LayerStore.js';
 import { GLMantrasRenderer } from './renderers/GLMantrasRenderer.js';
 import { renderCircles, renderLines, renderMantras } from './renderers/canvas2d.js';
