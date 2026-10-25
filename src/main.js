@@ -6,6 +6,8 @@ import { LayerPanel } from './ui/LayerPanel.js';
 import { GlobalControls } from './ui/GlobalControls.js';
 import { GamepadController } from './controller/GamepadController.js';
 import { ProtocolSequencer } from './state/ProtocolSequencer.js';
+import { ProtocolJournal } from './state/ProtocolJournal.js';
+import { PupilBiofeedback } from './utils/PupilBiofeedback.js';
 import { updateBreathe, createBreatheState } from './utils/breathe.js';
 
 class App {
@@ -13,7 +15,9 @@ class App {
   #glRenderer;
   #ctx;
   #bgCtx;
-  #protocol = new ProtocolSequencer();
+  #protocol;
+  #journal = new ProtocolJournal();
+  #biofeedback = new PupilBiofeedback();
   #breatheStates = new Map();
 
   init() {
@@ -31,9 +35,15 @@ class App {
     this.#ctx = fgCanvas.getContext('2d');
     this.#glRenderer = new GLMantrasRenderer(glCanvas);
 
+    this.#protocol = new ProtocolSequencer({
+      applyFrequency: frequency => this.#store.setSpeedsFromFrequency(frequency),
+      biofeedback: this.#biofeedback,
+      journal: this.#journal,
+    });
+
     // ── UI ─────────────────────────────────────────────────────────────
     const layerPanel = new LayerPanel(this.#store, document.getElementById('layers'));
-    new GlobalControls(this.#store, this.#protocol);
+    new GlobalControls(this.#store, this.#protocol, this.#journal);
     new GamepadController(
       this.#store,
       layerPanel,
@@ -48,6 +58,7 @@ class App {
       })
       .then(data => {
         this.#store.setLayers(data);
+        this.#store.setAllBreathe(true);
         console.info('Default layout loaded');
       })
       .catch(err => console.error('Failed to load default layout:', err));

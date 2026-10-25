@@ -18,17 +18,20 @@
       <p class="protocol-note">A gentle Alpha → Theta → Gamma sequence. Stop if it feels uncomfortable.</p>
       <div id="protocolStatus" aria-live="polite"></div>
       <button id="protocolButton" type="button">Start protocol</button>
+      <small class="d-block">Starting the protocol requests front-camera access.</small>
       <button id="protocolReset" type="button">Reset</button>
+      <button id="downloadSuccessJournal" type="button">Export successes</button>
+      <button id="downloadFailureJournal" type="button">Export unsuccessful</button>
     </section>
-    <div id="layers"></div>
+    <div id="layers" style="display: none;"></div>
     <button id="addLayerButton">Add Layer</button>
     <button id="saveLayoutButton">Save Layout</button>
-    <button id="toggleButton">➖</button>
+    <button id="toggleButton">Layers</button>
     <input type="file" id="loadLayoutInput" style="display:none;" />
     <button id="loadLayoutButton">Load Layout</button>
     <br>
     <label for="breatheCheckbox">Breathe</label>
-    <input type="checkbox" id="breatheCheckbox" />
+    <input type="checkbox" id="breatheCheckbox" checked />
     <br>
     <label for="rangeSelect">Range:</label>
     <select id="rangeSelect">

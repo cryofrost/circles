@@ -5,10 +5,12 @@
 export class GlobalControls {
   #store;
   #protocol;
+  #journal;
 
-  constructor(store, protocol) {
+  constructor(store, protocol, journal) {
     this.#store = store;
     this.#protocol = protocol;
+    this.#journal = journal;
     this.#init();
   }
 
@@ -45,7 +47,7 @@ export class GlobalControls {
       return `${String(minutes).padStart(2, '0')}:${String(remainder).padStart(2, '0')}`;
     };
     const updateStageOverlay = () => {
-      stageOverlay.textContent = `${this.#protocol.stage.name} · ${formatCountdown(this.#protocol.remainingSeconds)}`;
+      stageOverlay.textContent = `${this.#protocol.stage.name}\n${this.#protocol.currentFrequency.toFixed(1)} Hz · ${formatCountdown(this.#protocol.remainingSeconds)}`;
       requestAnimationFrame(updateStageOverlay);
     };
     const updateProtocolUI = () => {
@@ -53,7 +55,7 @@ export class GlobalControls {
       protocolButton.textContent = this.#protocol.running ? 'Pause protocol' : 'Start protocol';
       protocolStatus.textContent = reducedMotion
         ? 'Protocol paused: reduced motion is enabled.'
-        : `${stage.name}: ${stage.frequency} Hz · ${stage.duration} min`;
+        : `${stage.name}: ${this.#protocol.currentFrequency.toFixed(1)} Hz · ${stage.duration} min${this.#protocol.responseFound ? ' · response detected' : ''}`;
       stageOverlay.classList.toggle('active', this.#protocol.running);
     };
     protocolButton.addEventListener('click', () => {
@@ -67,13 +69,26 @@ export class GlobalControls {
     });
     this.#protocol.addEventListener('change', () => {
       updateProtocolUI();
-      store.setSpeedsFromFrequency(this.#protocol.stage.frequency);
+    });
+    this.#protocol.addEventListener('cameraerror', () => {
+      protocolStatus.textContent = 'Camera unavailable. Use HTTPS or localhost and allow camera access.';
+    });
+    this.#protocol.addEventListener('exhausted', () => {
+      protocolStatus.textContent = 'All phases in this range were previously unsuccessful; no retry started.';
+      updateProtocolUI();
     });
     if (reducedMotion) {
       protocolButton.disabled = true;
     }
     updateProtocolUI();
     updateStageOverlay();
+
+    document.getElementById('downloadSuccessJournal').addEventListener('click', () =>
+      this.#journal.download('success')
+    );
+    document.getElementById('downloadFailureJournal').addEventListener('click', () =>
+      this.#journal.download('failure')
+    );
 
     // ── breathe ────────────────────────────────────────────────────────
     document.getElementById('breatheCheckbox').addEventListener('change', e =>

@@ -35,6 +35,8 @@ body {
   font: 600 0.8rem/1.2 sans-serif;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: pre-line;
+  text-align: right;
   pointer-events: none;
 }
 
