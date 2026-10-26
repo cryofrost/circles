@@ -1,0 +1,6 @@
+{
+  "appId": "com.cryo.circles",
+  "appName": "Circles",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

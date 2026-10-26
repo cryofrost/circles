@@ -6,11 +6,19 @@
   "scripts": {
     "start": "vite --port 7777 --host 0.0.0.0",
     "build": "vite build",
+    "android:add": "npm run build && npx cap add android",
+    "android:sync": "npm run build && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:run": "npm run android:sync && npx cap run android",
     "preview": "vite preview",
     "start:legacy": "live-server --port=7777 --host=0.0.0.0 --no-browser",
     "test": "node test.js"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/filesystem": "^8.1.5",
     "animate.css": "^4.1.1",
     "bootstrap": "^5.3.6",
     "gl-matrix": "^3.4.3",
