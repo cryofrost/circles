@@ -1,5 +1,6 @@
 import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 
 const FILES = {
   success: 'successful-protocol-journal.txt',
@@ -37,15 +38,41 @@ export class ProtocolJournal {
     });
   }
 
-  download(kind) {
+  async download(kind) {
     const entries = kind === 'success' ? this.#successes : this.#failures;
     const text = entries.map(entry => JSON.stringify(entry)).join('\n');
+    const filename = `${kind === 'success' ? 'successful' : 'unsuccessful'}-protocol-journal.txt`;
+
+    if (this.#native) {
+      await this.#shareNative(filename, text);
+      return;
+    }
+
     const blob = new Blob([text ? `${text}\n` : ''], { type: 'text/plain' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `${kind === 'success' ? 'successful' : 'unsuccessful'}-protocol-journal.txt`;
+    link.download = filename;
     link.click();
     URL.revokeObjectURL(link.href);
+  }
+
+  async #shareNative(filename, text) {
+    try {
+      const result = await Filesystem.writeFile({
+        path: filename,
+        directory: Directory.Cache,
+        data: text,
+        encoding: Encoding.UTF8,
+      });
+      await Share.share({
+        title: 'Protocol Journal',
+        text: 'Exported protocol journal',
+        url: result.uri,
+        dialogTitle: 'Share protocol journal',
+      });
+    } catch (error) {
+      console.error('Failed to share journal:', error);
+    }
   }
 
   async #initialise() {
