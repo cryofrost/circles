@@ -155,6 +155,7 @@ export class ProtocolSequencer extends EventTarget {
     for (let frequency = min; frequency <= max + 0.0001; frequency += 0.1) {
       const candidate = Number(frequency.toFixed(2));
       if (!this.#journal?.hasFailed(this.#phaseKey, candidate)) this.#frequencies.push(candidate);
+      if (`${this.stage.id}` === 'theta') this.#frequencies.push(candidate); 
     }
     this.#frequencyIndex = 0;
     this.#elapsed = 0;
